@@ -8,6 +8,12 @@ const displayKanapInformations = () => {
     document.querySelector("#price").innerHTML = kanapInformations.price;
     document.querySelector("#description").innerHTML = kanapInformations.description;
   
+    // Une boucle "For in" qui parcourt les couleurs disponibles dans le tableau "kanapColors".
+  for (let i in kanapColors) {
+    document.querySelector("#colors").innerHTML += `
+        <option value="${kanapColors[i]}">${kanapColors[i]}</option>
+        `;
+  }
   };
   
   // "url" prend comme valeur l'adresse internet de la page qui contient un id.
@@ -17,6 +23,7 @@ const displayKanapInformations = () => {
   let id = url.searchParams.get("id");
 
   let kanapInformations;
+  let kanapColors = [];
   
   
   // Méthode Fetch qui récupère les données du canapé avec l'ID Dynamique récupéré dans l'URL et génère un fichier .JSON
