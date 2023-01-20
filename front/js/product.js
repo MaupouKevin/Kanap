@@ -24,7 +24,9 @@ const displayKanapInformations = () => {
 
   let kanapInformations;
   let kanapColors = [];
-  
+
+  // Récupération du bouton "ajouter au panier"
+let cartButton = document.querySelector("#addToCart"); 
   
   // Méthode Fetch qui récupère les données du canapé avec l'ID Dynamique récupéré dans l'URL et génère un fichier .JSON
   fetch("http://localhost:3000/api/products/" + id)
@@ -55,3 +57,4 @@ const displayKanapInformations = () => {
     console.log("Il y a eu un problème avec l'opération fetch: " + error.message);
   });
   
+
