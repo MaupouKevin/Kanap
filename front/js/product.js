@@ -110,3 +110,34 @@ const addBasket = (product) => {
 
   saveBasket(basket);
 };
+
+// Création d'un évènement au clic sur le bouton "ajouter au panier".
+cartButton.addEventListener("click", () => {
+
+  let color = document.querySelector("#colors").value;
+  let quantity = document.querySelector("#quantity").value;
+
+  if (color != "" && quantity <= 0 || quantity > 100) {
+
+    alert("Quantité invalide, selectionnez une quantité comprise entre 1 - 100");
+  }
+
+  else if (color == "" && quantity > 0 && quantity <= 100) {
+    
+    alert("Vous n'avez pas sélectionné la couleur de votre produit");
+  }
+
+  // Si "color" n'est pas vide ET que "quantity" est supérieur à 0, on exécute la fonction "addBasket".
+  else if (color != "" && quantity > 0 && quantity <= 100) {
+  
+    addBasket({
+      id: id,
+      color: color,
+      quantity: Number(quantity),
+    });
+
+  } else {
+    
+    alert("Veuillez sélectionner une couleur et une quantité (1 - 100)");
+  }
+});
