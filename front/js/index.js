@@ -1,59 +1,67 @@
+/*
+function displayMessage(message, messageAlternatif) {
+  console.log(message, messageAlternatif)
+}
+
+const messageToDisplay = 'Coucou Kévin'
+const messageAlternatifToDisplay = 'Hey !'
+displayMessage(messageToDisplay, messageAlternatifToDisplay)
+
+
+console.log(messageAlternatifToDisplay)
+*/
+
+
 //AFFICHAGE DES PRODUITS SUR LA PAGE INDEX
 
 // Déclaration des fonctions
 //--------------------------------------------------------------------------------------------------
 
 // Fonction qui injecte le contenu de l'API présentant les canapés dans index.html.
-const displayKanap = () => {
-    for (let i = 0; i < listKanap.length; i++) {
-      
-      kanapBox.innerHTML += `
-          <a href="./product.html?id=${listKanap[i]._id}">
-              <article>
-                  <img src="${listKanap[i].imageUrl}" alt="canapé : ${listKanap[i].altTxt}">
-                  <h3 class="productName">${listKanap[i].name}</h3>
-                  <p class="productDescription">${listKanap[i].description}</p>
-              </article>
-          </a>
-          `;
-    }
-  };
-  
-  // Déclaration des variables
-  //--------------------------------------------------------------------------------------------------
-  
-  // Variable "listKanap", un tableau vide qui va contenir le contenu des données de l'API.
-  let listKanap = [];
-  
+const displayKanap = (listKanap) => {
+
+    let kanapsToAdd = '';
+    listKanap.forEach(kanap => {
+
+      kanapsToAdd += `
+            <a href="./product.html?id=${kanap._id}">
+                <article>
+                    <img src="${kanap.imageUrl}" alt="canapé : ${kanap.altTxt}">
+                    <h3 class="productName">${kanap.name}</h3>
+                    <p class="productDescription">${kanap.description}</p>
+                </article>
+            </a>
+            `;
+    })
+
   // Selection de la section "items" dans le DOM pour pouvoir lui injecter les données plus facilement.
-  let kanapBox = document.getElementById("items");
+  const kanapBox = document.getElementById("items");
+  kanapBox.innerHTML = kanapsToAdd
   
-  
+  };
+   
+
+  const run = () => {
   // Méthode Fetch qui récupère les données des canapés dans l'API et renvoie un fichier .json.
   fetch("http://localhost:3000/api/products")
-  
-    .then((response) => {
-  
+    .then(response => {
       //On vérifie que la promesse est résolue.
       if(response.ok) {
-  
         // SI elle est est résolue alors on récupère le fichier .json qui contient les données.
-        response.json()
-    
-        // Le fichier .json est traité et son contenu stocké dans la variable "listKanap".
-        .then((value) => {
-          listKanap = value;
-  
-          // Appel des fonctions d'affichage.
-          displayKanap();
-        })
-  
+        return response.json()
       } else {
         console.log('Mauvaise réponse du réseau');
       }
     })
-  
+    .then(kanapList => {
+      // Le fichier .json est traité et son contenu stocké dans la variable "listKanap".
+      // Appel des fonctions d'affichage.
+      displayKanap(kanapList);
+    })
     // On récupère l'erreur dans l'une des requêtes.
-    .catch((error) => {
+    .catch(error => {
       console.log("Il y a eu un problème avec l'opération fetch: " + error.message);
     });
+  }
+
+  run()
