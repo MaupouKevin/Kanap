@@ -44,6 +44,7 @@ const getTotalQty = () => {
 /* Fonction qui utilise la méthode (.find) pour parcourir nos 2 tableaux le localStorage et "cartKanaps" et rechercher une correspondance avec le produit "product" dont on souhaite modifier la quantité.
 Si le produit est trouvé alors on change la quantité dans les tableaux, sinon on ne fait rien */
 const quantityProduct = (product) => {
+    const cart = getFromCart();
     let findProduct = cart.find((p) => p.id == product.id && p.color == product.color);
 
     if (findProduct != undefined) {
@@ -61,9 +62,11 @@ const quantityProduct = (product) => {
 
 // Fonction qui va créer un eventListener avec la boucle "forEach" pour écouter les changements sur chaque input "itemQuantity".
 const changeQuantityProduct = () => {
-    let inputItemQuantity = document.querySelectorAll('.itemQuantity');
+    const inputItemQuantity = document.getElementsByClassName('itemQuantity');
+    // convertir inputQuantityToLoop en tableau
+    const inputQuantityToLoop = Array.from(inputItemQuantity)
 
-    inputItemQuantity.forEach(itemQuantity => {
+    inputQuantityToLoop.forEach(itemQuantity => {
 
         itemQuantity.addEventListener('change', (e) => {
             e.preventDefault();
@@ -112,19 +115,19 @@ const changeQuantityProduct = () => {
 const deleteProduct = () => {
 
     // Selection de tous les boutons "deleteItem".
-    let deleteButton = document.querySelectorAll(".deleteItem");
-
+    const deleteButton = document.getElementsByClassName("deleteItem");
+    const deleteButtonToLoop = Array.from(deleteButton)
     // On boucle sur chacun d'eux pour leur ajouter un ".addEventListener".
-    deleteButton.forEach(deleteItem => {
+    deleteButtonToLoop.forEach(deleteItem => {
     
-        deleteItem.addEventListener("click" , (e) => {
-            e.preventDefault();
+        deleteItem.addEventListener("click" , (event) => {
+            event.preventDefault();
 
             // On récupère l'élément dans lequel on veut supprimer le noeud grâce a "removeChild()" ici la section cart__items.
-            let cartItems = document.querySelector('#cart__items')
+            const cartItems = document.querySelector('#cart__items')
 
             // On récupère l'élément à supprimer via (Element.closest) pour sélectionner l'élément parent du bouton "supprimer".
-            let retrieveParentData = deleteItem.closest('.cart__item');
+            const retrieveParentData = deleteItem.closest('.cart__item');
 
             // On supprime le noeud du DOM avec la méthode ".removeChild()" avec comme paramètre l'élément à supprimer.
             cartItems.removeChild(retrieveParentData);
@@ -150,14 +153,14 @@ const cartDisplay = () => {
 
     if (cartKanaps === null || cartKanaps == 0) {
         const emptyCart = `<h2 style="text-align: center">Désolé mais votre panier est vide... </h2> <p style="text-align: center"><a href="../html/index.html">Continuer mon shopping</a></p>`;
-        document.getElementById("cart__items").innerHTML = emptyCart;
-        
-    } else {
+        document.getElementById("cart__items").innerHTML = emptyCart;     
+    } 
+    
+    else {
 
-    for (let i in cartKanaps) {
-        document.getElementById("cart__items").innerHTML += 
-        `
-            <article class="cart__item" data-id="${cartKanaps[i].id}" data-color="${cartKanaps[i].color}">
+        for (let i in cartKanaps) {
+            document.getElementById("cart__items").innerHTML += 
+            `<article class="cart__item" data-id="${cartKanaps[i].id}" data-color="${cartKanaps[i].color}">
                 <div class="cart__item__img">
                     <img src="${cartKanaps[i].img}" alt="${cartKanaps[i].altTxt}">
                 </div>
@@ -177,60 +180,14 @@ const cartDisplay = () => {
                         </div>
                     </div>
                 </div>
-            </article>
-        `;
-    }
-    
-   getTotalQty();
+            </article>`;
+        }
+
+        console.log()
+        getTotalQty();
 
     };
 }
-
-// DECLARATION DES VARIABLES GLOBALES, DE LA FONCTION FETCH ET ACTIVATION DES FONCTIONS
-//-----------------------------------------------------------------------------------
-let cart = getFromCart();
-// Déclaration d'un tableau qui récupèrera les informations via l'API des produits du localStorage.
-let cartKanaps = [];
-
-fetch("http://localhost:3000/api/products")
-    .then((response) => {
-        return response.json();
-    })
-
-    .then((value) => {
-        kanapListApi = value;
-    
-        // Boucle les données de l'API, et à chaque itération une 2ème boucle se lance.
-        for (let i = 0; i < kanapListApi.length; i++) {
-            
-            // A chaque itération de la première boucle, on recherche une correspondance dans le localStorage.
-            for (let j = 0; j < cart.length; j++) {
-
-                if (kanapListApi[i]._id === cart[j].id) {
-
-                    // Si une correspondance a été trouvé on ajoute l'objet "cartKanap" dans le tableau "cartKanaps".
-                    let cartKanap = {
-                        id: cart[j].id,
-                        color: cart[j].color,
-                        quantity: cart[j].quantity,
-                        name: kanapListApi[i].name,
-                        price: kanapListApi[i].price,
-                        img: kanapListApi[i].imageUrl,
-                        altTxt: kanapListApi[i].altTxt,
-                    };
-                    cartKanaps.push(cartKanap);
-                }
-            }
-        }
-        // Appel des fonctions d'affichage.
-        cartDisplay();
-        changeQuantityProduct();
-        deleteProduct();
-    })
-
-    .catch((error) => {
-        console.log(error.message);
-    });
 
 // PARTIE SAISIE DU FORMULAIRE
 //-----------------------------------------------------------------------------------
@@ -298,31 +255,19 @@ const inputAnalyser = () => {
         } else {
             email.style.border = '1px solid red';
             document.getElementById('emailErrorMsg').style.color = 'red';
-            document.getElementById('emailErrorMsg').innerHTML = 'Merci de saisir une adresse mail correcte (exemple : jean@gmail.com)';
+            document.getElementById('emailErrorMsg').innerHTML = 'Merci de saisir une adresse mail correcte';
         }
     });
+
+    console.log(inputAnalyser);
 };
-
-// Déclaration des ReGex.
-let nameRegex = /^[a-zA-Zàâäéèêëïîôöùûüç][-/a-zA-Zàâäéèêëïîôöùûüç ]*[a-zA-Zàâäéèêëïîôöùûüç]+$/;
-let addressRegex = /^[a-zA-Z0-9]+[-a-zA-Zàâäéèêëïîôöùûüç ]+[a-zA-Z]$/;
-let emailRegex = /^[a-zA-Z0-9][-_a-zA-Z0-9àâäéèêëïîôöùûüç ]+[@]{1}[a-zA-Z0-9]+[\.]{1}[a-z]{2,5}$/;
-
-// Déclaration des variables des différents "input" du formaulaire.
-let firstName = document.getElementById('firstName');
-let lastName = document.getElementById('lastName');
-let address = document.getElementById('address');
-let city = document.getElementById('city');
-let email = document.getElementById('email');
-
-inputAnalyser();
 
 // ENREGISTREMENT ET ENVOI DES INFORMATIONS DU FORMULAIRE ET DU PANIER
 //------------------------------------------------------------------------------------
 const postForm = () => {
 
     // Déclaration du tableau qui va recevoir les id des produits dans le panier.
-    let productsId = [];
+    const productsId = [];
         
     // Boucle For qui intégre les id des produits dans le tableau [productsId].
     for (let products of cart) {
@@ -340,6 +285,8 @@ const postForm = () => {
         },
         products : productsId,
     }
+    
+    console.log(postForm)
     
     // Méthode Fetch qui envoie une requête "POST" de l'objet "orderClient" formaté en JSON
     fetch("http://localhost:3000/api/products/order", {
@@ -371,17 +318,18 @@ const postForm = () => {
     .catch((error) => {
         console.log("Il y a eu un problème avec l'opération fetch: " + error.message);
     });
+
+    
 };
 
 // au clic sur le bouton "Commander !"
 document.getElementById('order').addEventListener("click", (e)=> {
     e.preventDefault();
-    if (basket === null || basket == 0)
-    {
+    if (cart === null || cart == 0) {
         alert("Votre panier est vide, vous ne pouvez pas passer commande !");
-    
+    } 
     // Si tous les champs sont valides et ne retournent pas d'erreur :
-    } else if (nameRegex.test(firstName.value) 
+    else if (nameRegex.test(firstName.value) 
                 && nameRegex.test(lastName.value) 
                 && addressRegex.test(address.value)
                 && nameRegex.test(city.value)
@@ -389,8 +337,71 @@ document.getElementById('order').addEventListener("click", (e)=> {
                 
                 // On appel "postForm()" pour l'envoi du formulaire. 
                 postForm();
+    } 
+    else {
+        alert ("Un problème est survenu lors de la saisie des données...");
+    }
 
-            } else {
-                alert ("Un problème est survenu lors de la saisie des données...");
-            }
+    console.log(addEventListener)
 })
+
+
+// DECLARATION DES VARIABLES GLOBALES, DE LA FONCTION FETCH ET ACTIVATION DES FONCTIONS
+//-----------------------------------------------------------------------------------
+let cart = getFromCart();
+// Déclaration d'un tableau qui récupèrera les informations via l'API des produits du localStorage.
+let cartKanaps = [];
+
+// Déclaration des ReGex.
+const nameRegex = /^[a-zA-Zàâäéèêëïîôöùûüç][-/a-zA-Zàâäéèêëïîôöùûüç ]*[a-zA-Zàâäéèêëïîôöùûüç]+$/;
+const addressRegex = /^[a-zA-Z0-9]+[-a-zA-Zàâäéèêëïîôöùûüç ]+[a-zA-Z]$/;
+const emailRegex = /^[a-zA-Z0-9][-_.a-zA-Z0-9àâäéèêëïîôöùûüç ]+[@]{1}[a-zA-Z0-9]+[\.]{1}[a-z]{2,5}$/;
+
+// Déclaration des variables des différents "input" du formulaire.
+const firstName = document.getElementById('firstName');
+const lastName = document.getElementById('lastName');
+const address = document.getElementById('address');
+const city = document.getElementById('city');
+const email = document.getElementById('email');
+
+
+
+inputAnalyser();
+
+fetch("http://localhost:3000/api/products")
+    .then(response => response.json())
+    .then(kanapListApi => {
+
+        // Boucle les données de l'API, et à chaque itération une 2ème boucle se lance.
+        for (let i = 0; i < kanapListApi.length; i++) {
+
+            // A chaque itération de la première boucle, on recherche une correspondance dans le localStorage.
+            for (let j = 0; j < cart.length; j++) {
+
+                if (kanapListApi[i]._id === cart[j].id) {
+
+                    // Si une correspondance a été trouvé on ajoute l'objet "cartKanap" dans le tableau "cartKanaps".
+                    let cartKanap = {
+                        id: cart[j].id,
+                        color: cart[j].color,
+                        quantity: cart[j].quantity,
+                        name: kanapListApi[i].name,
+                        price: kanapListApi[i].price,
+                        img: kanapListApi[i].imageUrl,
+                        altTxt: kanapListApi[i].altTxt,
+                    };
+                    cartKanaps.push(cartKanap);
+                }
+            }
+        }
+        // Appel des fonctions d'affichage.
+        cartDisplay();
+        changeQuantityProduct();
+        deleteProduct();
+
+        console.log()
+    })
+
+    .catch((error) => {
+        console.log(error.message);
+    });

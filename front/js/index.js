@@ -1,22 +1,5 @@
-/*
-function displayMessage(message, messageAlternatif) {
-  console.log(message, messageAlternatif)
-}
-
-const messageToDisplay = 'Coucou Kévin'
-const messageAlternatifToDisplay = 'Hey !'
-displayMessage(messageToDisplay, messageAlternatifToDisplay)
-
-
-console.log(messageAlternatifToDisplay)
-*/
-
-
 //AFFICHAGE DES PRODUITS SUR LA PAGE INDEX
-
-// Déclaration des fonctions
 //--------------------------------------------------------------------------------------------------
-
 // Fonction qui injecte le contenu de l'API présentant les canapés dans index.html.
 const displayKanap = (listKanap) => {
 
@@ -37,24 +20,27 @@ const displayKanap = (listKanap) => {
   // Selection de la section "items" dans le DOM pour pouvoir lui injecter les données plus facilement.
   const kanapBox = document.getElementById("items");
   kanapBox.innerHTML = kanapsToAdd
-  
-  };
+
+  console.log(displayKanap)
+};
    
 
-  const run = () => {
+const run = () => {
   // Méthode Fetch qui récupère les données des canapés dans l'API et renvoie un fichier .json.
   fetch("http://localhost:3000/api/products")
-    .then(response => {
+  .then(response => {
       //On vérifie que la promesse est résolue.
       if(response.ok) {
         // SI elle est est résolue alors on récupère le fichier .json qui contient les données.
         return response.json()
-      } else {
+      } 
+      
+      else {
         console.log('Mauvaise réponse du réseau');
       }
-    })
+  })
     .then(kanapList => {
-      // Le fichier .json est traité et son contenu stocké dans la variable "listKanap".
+      // Le fichier .json est traité et son contenu stocké dans la variable "kanapList".
       // Appel des fonctions d'affichage.
       displayKanap(kanapList);
     })
@@ -62,6 +48,8 @@ const displayKanap = (listKanap) => {
     .catch(error => {
       console.log("Il y a eu un problème avec l'opération fetch: " + error.message);
     });
-  }
+
+    console.log(run)
+}
 
   run()
