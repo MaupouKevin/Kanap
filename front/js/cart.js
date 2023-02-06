@@ -232,7 +232,6 @@ const inputAnalyser = () => {
         }
     ]
 
-    
     const validStyle = '1px solid green';
     const errorStyle = '1px solid red';
     // Boucle ForEach pour vérifier chaque "input" du formulaire
@@ -250,7 +249,7 @@ const inputAnalyser = () => {
                 errorDiv.textContent = 'Valide';
                 // Sinon on affiche le message d'erreur.
             } else {
-                firstName.style.border = errorStyle;
+                elementInDom.style.border = errorStyle;
                 errorDiv.style.backgroundColor = 'rgb(253, 81, 81)';
                 errorDiv.style.color = 'darkred';
                 errorDiv.innerHTML = element.errorMessage

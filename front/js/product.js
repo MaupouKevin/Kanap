@@ -62,7 +62,7 @@ const addToCart = (product) => {
     // Sinon le resultat est "undefined" et donc le produit n'existe pas donc on le rajoute au tableau "cart".
   } else {
     cart.push(product);
-     ('Le produit a bien été ajouté dans votre panier !');
+    alert ('Le produit a bien été ajouté dans votre panier !');
   }
 
   saveTheCart(cart);
