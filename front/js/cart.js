@@ -16,6 +16,7 @@ const getFromCart = () => {
 // Fonction qui sauvegarde les données du panier du LocalStorage.
 const saveTheCart = (cartContent) => {
     localStorage.setItem("cartItems", JSON.stringify(cartContent));
+
 };  
 
 // DECLARATION DES FONCTIONS
@@ -39,6 +40,8 @@ const getTotalQty = () => {
     // On affiche les éléments de quantité totale d'articles et le prix total dans le DOM.
     document.getElementById("totalQuantity").textContent = totalQuantity;
     document.getElementById("totalPrice").textContent = totalPrice;
+
+
 }
 
 /* Fonction qui utilise la méthode (.find) pour parcourir nos 2 tableaux le localStorage et "cartKanaps" et rechercher une correspondance avec le produit "product" dont on souhaite modifier la quantité.
@@ -58,6 +61,7 @@ const quantityProduct = (product) => {
     }
     
     saveTheCart(cart);
+
 }
 
 // Fonction qui va créer un eventListener avec la boucle "forEach" pour écouter les changements sur chaque input "itemQuantity".
@@ -144,8 +148,10 @@ const deleteProduct = () => {
 
             // Appel de "getTotalQty" pour mettre à jour le prix et les quantités en direct sur le DOM.
             getTotalQty();
+            confirm('Etes-vous sûr de vouloir supprimer ce produit de votre panier ?');
         })
     })
+
 }
 
 // Fonction qui injecte le contenu du tableau [cartKanaps] dans le code de cart.html
@@ -183,7 +189,6 @@ const cartDisplay = () => {
             </article>`;
         }
 
-        console.log()
         getTotalQty();
 
     };
@@ -192,75 +197,69 @@ const cartDisplay = () => {
 // PARTIE SAISIE DU FORMULAIRE
 //-----------------------------------------------------------------------------------
 const inputAnalyser = () => {
-    //AddEventListener pour écouter chaque changement sur les différents "input" du formulaire.
-    // Si changement détecté :
-    firstName.addEventListener('change', () => {
 
-        // On vérifie si la saisie est valide par le RegEx selectionné.
-        // Si c'est bon, le message d'erreur vaut "Valide".
-        if (nameRegex.test(firstName.value)) {
-            firstName.style.border = '1px solid green';
-            document.getElementById('firstNameErrorMsg').style.color = 'green';
-            document.getElementById('firstNameErrorMsg').textContent = "Valide";
-        
-        // Sinon on affiche le message d'erreur.
-        } else {
-            firstName.style.border = '1px solid red';
-            document.getElementById('firstNameErrorMsg').style.color = 'red';
-            document.getElementById('firstNameErrorMsg').innerHTML = 'Une erreur est présente dans votre prénom';
+    const formFields = [
+        { 
+            id: 'firstName',
+            idErrorDiv: 'firstNameErrorMsg',
+            errorMessage: 'Une erreur est présente dans votre prénom',
+            regex: nameRegex
+        },
+        {
+            id: 'lastName',
+            idErrorDiv: 'lastNameErrorMsg',
+            errorMessage: 'Une erreur est présente dans votre Nom',
+            regex: nameRegex
+                      
+        },
+        {
+            id: 'address',
+            idErrorDiv:'addressErrorMsg',
+            errorMessage:'Une erreur est présente dans votre adresse postale',
+            regex: addressRegex,
+        },
+        {
+            id: 'city',
+            idErrorDiv:'cityErrorMsg',
+            errorMessage:'Une erreur est présente dans votre ville',
+            regex: nameRegex,
+        },
+        {
+            id: 'email',
+            idErrorDiv:'emailErrorMsg',
+            errorMessage:'Merci de saisir une adresse mail valide',
+            regex: emailRegex,
         }
-    });
+    ]
 
-    lastName.addEventListener('change', () => {
-        if (nameRegex.test(lastName.value)) {
-            lastName.style.border = '1px solid green';
-            document.getElementById('lastNameErrorMsg').style.color = 'green';
-            document.getElementById('lastNameErrorMsg').textContent = "Valide";
-        } else {
-            lastName.style.border = '1px solid red';
-            document.getElementById('lastNameErrorMsg').style.color = 'red';
-            document.getElementById('lastNameErrorMsg').innerHTML = 'Une erreur est présente dans votre Nom';
-        }
-    });
+    
+    const validStyle = '1px solid green';
+    const errorStyle = '1px solid red';
+    // Boucle ForEach pour vérifier chaque "input" du formulaire
+    formFields.forEach(element => {
+        const elementInDom = document.getElementById(element.id)
+        //AddEventListener pour écouter chaque changement sur les différents "input" du formulaire.
+        elementInDom.addEventListener('change', () => {
+            // On vérifie si la saisie est valide par le RegEx selectionné.
+            const errorDiv = document.getElementById(element.idErrorDiv)
+            // Si c'est bon, le message d'erreur vaut "Valide".
+            if (element.regex.test(elementInDom.value)) {
+                elementInDom.style.border = validStyle;
+                errorDiv.style.backgroundColor = 'lightgreen';
+                errorDiv.style.color = 'darkgreen';
+                errorDiv.textContent = 'Valide';
+                // Sinon on affiche le message d'erreur.
+            } else {
+                firstName.style.border = errorStyle;
+                errorDiv.style.backgroundColor = 'rgb(253, 81, 81)';
+                errorDiv.style.color = 'darkred';
+                errorDiv.innerHTML = element.errorMessage
+            }
+        })
+    })
 
-    address.addEventListener('change', () => {
-        if (addressRegex.test(address.value)) {
-            address.style.border = '1px solid green';
-            document.getElementById('addressErrorMsg').style.color = 'green';
-            document.getElementById('addressErrorMsg').textContent = "Valide";
-        } else {
-            address.style.border = '1px solid red';
-            document.getElementById('addressErrorMsg').style.color = 'red';
-            document.getElementById('addressErrorMsg').innerHTML = 'Une erreur est présente dans votre adresse postale';
-        }
-    });
-
-    city.addEventListener('change', () => {
-        if (nameRegex.test(city.value)) {
-            city.style.border = '1px solid green';
-            document.getElementById('cityErrorMsg').style.color = 'green';
-            document.getElementById('cityErrorMsg').textContent = "Valide";
-        } else {
-            city.style.border = '1px solid red';
-            document.getElementById('cityErrorMsg').style.color = 'red';
-            document.getElementById('cityErrorMsg').innerHTML = 'Une erreur est présente dans votre ville';
-        }
-    });
-
-    email.addEventListener('change', () => {
-        if (emailRegex.test(email.value)) {
-            email.style.border = '1px solid green';
-            document.getElementById('emailErrorMsg').style.color = 'green';
-            document.getElementById('emailErrorMsg').textContent = "Valide";
-        } else {
-            email.style.border = '1px solid red';
-            document.getElementById('emailErrorMsg').style.color = 'red';
-            document.getElementById('emailErrorMsg').innerHTML = 'Merci de saisir une adresse mail correcte';
-        }
-    });
-
-    console.log(inputAnalyser);
 };
+
 
 // ENREGISTREMENT ET ENVOI DES INFORMATIONS DU FORMULAIRE ET DU PANIER
 //------------------------------------------------------------------------------------
@@ -286,8 +285,7 @@ const postForm = () => {
         products : productsId,
     }
     
-    console.log(postForm)
-    
+
     // Méthode Fetch qui envoie une requête "POST" de l'objet "orderClient" formaté en JSON
     fetch("http://localhost:3000/api/products/order", {
         method: 'POST',
@@ -342,7 +340,6 @@ document.getElementById('order').addEventListener("click", (e)=> {
         alert ("Un problème est survenu lors de la saisie des données...");
     }
 
-    console.log(addEventListener)
 })
 
 
@@ -373,33 +370,29 @@ fetch("http://localhost:3000/api/products")
     .then(kanapListApi => {
 
         // Boucle les données de l'API, et à chaque itération une 2ème boucle se lance.
-        for (let i = 0; i < kanapListApi.length; i++) {
-
-            // A chaque itération de la première boucle, on recherche une correspondance dans le localStorage.
-            for (let j = 0; j < cart.length; j++) {
-
-                if (kanapListApi[i]._id === cart[j].id) {
-
-                    // Si une correspondance a été trouvé on ajoute l'objet "cartKanap" dans le tableau "cartKanaps".
-                    let cartKanap = {
-                        id: cart[j].id,
-                        color: cart[j].color,
-                        quantity: cart[j].quantity,
-                        name: kanapListApi[i].name,
-                        price: kanapListApi[i].price,
-                        img: kanapListApi[i].imageUrl,
-                        altTxt: kanapListApi[i].altTxt,
+        kanapListApi.forEach(kanapFromApi => {
+            cart.forEach(cartLocal => {
+                // Si une correspondance a été trouvé on ajoute l'objet "cartKanap" dans le tableau "cartKanaps".
+                if (kanapFromApi._id === cartLocal.id) {     
+                    const cartKanap = {
+                        id: cartLocal.id,
+                        color: cartLocal.color,
+                        quantity: cartLocal.quantity,
+                        name: kanapFromApi.name,
+                        price: kanapFromApi.price,
+                        img: kanapFromApi.imageUrl,
+                        altTxt: kanapFromApi.altTxt,
                     };
                     cartKanaps.push(cartKanap);
                 }
-            }
-        }
+            })
+        })
+
         // Appel des fonctions d'affichage.
         cartDisplay();
         changeQuantityProduct();
         deleteProduct();
 
-        console.log()
     })
 
     .catch((error) => {

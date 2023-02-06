@@ -1,7 +1,4 @@
 // PARTIE QUI AFFICHE LES INFORMATIONS SUR LA PAGE product.html 
-//--------------------------------------------------------------------------------
-// let kanapInformations;
-// let kanapColors = [];
 
 // Fonction qui intègre les différentes données du canapé dans la page product.html
 const displayInformationsKanap = (kanapInformations) => {
@@ -16,7 +13,6 @@ const displayInformationsKanap = (kanapInformations) => {
   });
   document.getElementById("colors").innerHTML = colorsToAdd
 
-  console.log(displayInformationsKanap)
 };
 
 // PARTIE QUI TRAITE ET ENREGISTRE LES DONNÉES DANS LE window.localStorage
@@ -25,7 +21,7 @@ const displayInformationsKanap = (kanapInformations) => {
 // Fonction qui sauvegarde les données du panier (LocalStorage).
 const saveTheCart = (cartContent) => {
   window.localStorage.setItem("cartItems", JSON.stringify(cartContent));
-  console.log(saveTheCart)
+  
 };
 
 // Fonction qui récupère les données du panier(LocalStorage).
@@ -66,10 +62,9 @@ const addToCart = (product) => {
     // Sinon le resultat est "undefined" et donc le produit n'existe pas donc on le rajoute au tableau "cart".
   } else {
     cart.push(product);
-    alert ('Le produit a bien été ajouté dans votre panier !');
+     ('Le produit a bien été ajouté dans votre panier !');
   }
 
-  console.log(addToCart)
   saveTheCart(cart);
 };
 
@@ -104,8 +99,9 @@ const addListeners = (productId) => {
       alert("Veuillez sélectionner une couleur et une quantité (1 - 100)");
     }
   });
-  console.log(addListeners)
+ 
 }
+
 
 const process = () => {
 
@@ -138,7 +134,6 @@ const process = () => {
       console.log("Il y a eu un problème avec l'opération fetch: " + error.message);
     });
 
-    console.log(process)
 }
 
 process()
